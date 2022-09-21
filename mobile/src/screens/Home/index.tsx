@@ -24,7 +24,7 @@ function handleOpenGame({id, title,bannerUrl}:GameCardProps){
 }
 
 useEffect(() => {
-  fetch('http://192.168.1.5:3336/games')
+  fetch('http://192.168.1.5:3333/games')
   .then(Response => Response.json())
   .then(data => setGames(data));
 },[]);
@@ -59,3 +59,4 @@ useEffect(() => {
     </Background>
   );
 }
+

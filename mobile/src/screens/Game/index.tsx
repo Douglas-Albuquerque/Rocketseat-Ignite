@@ -9,6 +9,7 @@ import { Background } from "../../Components/Background";
 import { GameParams } from "../../@types/navigation";
 import { Header } from '../../Components/Header';
 import { DuoCard, DuoCardProps } from '../../Components/DuoCard';
+import { DuoMatch } from "../../Components/DuoMatch";
 //Styles
 import { styles } from './styles';
 import { THEME } from '../../theme';
@@ -18,6 +19,7 @@ import { TextAlignJustify } from 'phosphor-react-native';
 
 export function Game() {
   const [duos, setDuos] = useState<DuoCardProps[]>([]);
+  const [discordDuoSelected, setDiscordDuoSelected] = useState('');
 
   const navigation = useNavigation();
   const route = useRoute();
@@ -27,8 +29,14 @@ export function Game() {
     navigation.goBack();
   }
 
+  async function getDiscordUSer(adsID: string) {
+    fetch(`http://192.168.1.5:3333/ads/${adsID}/discord`)
+    .then(Response => Response.json())
+    .then(data => setDiscordDuoSelected(data.discord));
+  }
+
   useEffect(() => {
-    fetch(`http://192.168.1.5:3336/games/${game.id}/ads`)
+    fetch(`http://192.168.1.5:3333/games/${game.id}/ads`)
     .then(Response => Response.json())
     .then(data => setDuos(data));
   },[]);
@@ -71,7 +79,7 @@ export function Game() {
         renderItem={({item}) => (
           <DuoCard 
           data={item}
-          onConnect={() => {}}
+          onConnect={() => getDiscordUSer(item.id)}
           />
         )}
         horizontal
@@ -85,6 +93,12 @@ export function Game() {
 
         )}
       
+      />
+
+      <DuoMatch
+        visible={discordDuoSelected.length > 0}
+        discord={discordDuoSelected}
+        onClose={() => setDiscordDuoSelected('')}
       />
 
     </SafeAreaView>
